@@ -20,6 +20,10 @@ Patch3:     wpa_supplicant-quiet-scan-results-message.patch
 Patch4:     wpa_supplicant-openssl-more-algs.patch
 Patch5:     wpa_supplicant-gui-qt4.patch
 Patch6:     libnl3-includes.patch
+Patch7:     0001-Get-errno-firstly-to-avoid-it-is-changed-later.patch
+Patch8:     0003-Tethering-Notify-listeners-when-station-is-authorize.patch
+Patch9:     0004-Tethering-Cancel-delayed-scheduled-scan-when-wpa_sup.patch
+Patch10:    0006-AP-STA-CONNECTED-event-not-written-for-wifi-open-hid.patch
 BuildRequires:  pkgconfig(libnl-3.0)
 BuildRequires:  pkgconfig(dbus-1)
 BuildRequires:  pkgconfig(openssl)
@@ -73,6 +77,14 @@ unless you know what you're doing.
 %patch5 -p1
 # libnl3-includes.patch
 %patch6 -p1
+# 0001-Get-errno-firstly-to-avoid-it-is-changed-later.patch
+%patch7 -p1
+# 0003-Tethering-Notify-listeners-when-station-is-authorize.patch
+%patch8 -p1
+# 0004-Tethering-Cancel-delayed-scheduled-scan-when-wpa_sup.patch
+%patch9 -p1
+# 0006-AP-STA-CONNECTED-event-not-written-for-wifi-open-hid.patch
+%patch10 -p1
 
 %build
 pushd wpa_supplicant

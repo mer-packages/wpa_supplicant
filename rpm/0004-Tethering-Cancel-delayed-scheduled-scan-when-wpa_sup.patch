@@ -1,0 +1,68 @@
+From e7382886721c55bfe3c47f6fd176b69181066d8f Mon Sep 17 00:00:00 2001
+From: Chengyi Zhao <chengyi1.zhao@archermind.com>
+Date: Wed, 10 Jul 2013 15:15:09 +0800
+Subject: [PATCH 4/6] Tethering: Cancel delayed scheduled scan when
+ wpa_supplicant cleans up
+
+---
+ wpa_supplicant/scan.c           |   18 ++++++++++++++++++
+ wpa_supplicant/scan.h           |    1 +
+ wpa_supplicant/wpa_supplicant.c |    1 +
+ 3 files changed, 20 insertions(+)
+
+diff --git a/wpa_supplicant/scan.c b/wpa_supplicant/scan.c
+index d2b671a..f202f4d 100644
+--- a/wpa_supplicant/scan.c
++++ b/wpa_supplicant/scan.c
+@@ -1134,6 +1134,24 @@ void wpa_supplicant_cancel_sched_scan(struct wpa_supplicant *wpa_s)
+ 
+ 
+ /**
++ * wpa_supplicant_cancel_delayed_sched_scan - Stop running delayed
++ * scheduled scans
++ * @wpa_s: Pointer to wpa_supplicant data
++ *
++ * This function is used to stop a delayed scheduled scan.
++ */
++void wpa_supplicant_cancel_delayed_sched_scan(struct wpa_supplicant *wpa_s)
++{
++	if (!wpa_s->sched_scan_supported)
++		return;
++
++	wpa_dbg(wpa_s, MSG_DEBUG, "Cancelling delayed sched scan");
++	eloop_cancel_timeout(wpa_supplicant_delayed_sched_scan_timeout,
++			     wpa_s, NULL);
++}
++
++
++/**
+  * wpa_supplicant_notify_scanning - Indicate possible scan state change
+  * @wpa_s: Pointer to wpa_supplicant data
+  * @scanning: Whether scanning is currently in progress
+diff --git a/wpa_supplicant/scan.h b/wpa_supplicant/scan.h
+index 5096287..3dfb4a5 100644
+--- a/wpa_supplicant/scan.h
++++ b/wpa_supplicant/scan.h
+@@ -16,6 +16,7 @@ int wpa_supplicant_delayed_sched_scan(struct wpa_supplicant *wpa_s,
+ int wpa_supplicant_req_sched_scan(struct wpa_supplicant *wpa_s);
+ void wpa_supplicant_cancel_scan(struct wpa_supplicant *wpa_s);
+ void wpa_supplicant_cancel_sched_scan(struct wpa_supplicant *wpa_s);
++void wpa_supplicant_cancel_delayed_sched_scan(struct wpa_supplicant *wpa_s);
+ void wpa_supplicant_notify_scanning(struct wpa_supplicant *wpa_s,
+ 				    int scanning);
+ struct wpa_driver_scan_params;
+diff --git a/wpa_supplicant/wpa_supplicant.c b/wpa_supplicant/wpa_supplicant.c
+index 0fb4d0f..bc68cbe 100644
+--- a/wpa_supplicant/wpa_supplicant.c
++++ b/wpa_supplicant/wpa_supplicant.c
+@@ -426,6 +426,7 @@ static void wpa_supplicant_cleanup(struct wpa_supplicant *wpa_s)
+ 	wpa_bss_deinit(wpa_s);
+ 
+ 	wpa_supplicant_cancel_scan(wpa_s);
++	wpa_supplicant_cancel_delayed_sched_scan(wpa_s);
+ 	wpa_supplicant_cancel_auth_timeout(wpa_s);
+ 	eloop_cancel_timeout(wpa_supplicant_stop_countermeasures, wpa_s, NULL);
+ #ifdef CONFIG_DELAYED_MIC_ERROR_REPORT
+-- 
+1.7.9.5
+
