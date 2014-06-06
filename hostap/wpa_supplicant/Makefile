@@ -1665,10 +1665,10 @@ wpa_gui:
 	@echo "wpa_gui has been removed - see wpa_gui-qt4 for replacement"
 
 wpa_gui-qt4/Makefile:
-	qmake -o wpa_gui-qt4/Makefile wpa_gui-qt4/wpa_gui.pro 
+	qmake-qt4 -o wpa_gui-qt4/Makefile wpa_gui-qt4/wpa_gui.pro
 
 wpa_gui-qt4/lang/wpa_gui_de.qm: wpa_gui-qt4/lang/wpa_gui_de.ts
-	lrelease wpa_gui-qt4/wpa_gui.pro
+	lrelease-qt4 wpa_gui-qt4/wpa_gui.pro
 
 wpa_gui-qt4: wpa_gui-qt4/Makefile wpa_gui-qt4/lang/wpa_gui_de.qm
 	$(MAKE) -C wpa_gui-qt4
