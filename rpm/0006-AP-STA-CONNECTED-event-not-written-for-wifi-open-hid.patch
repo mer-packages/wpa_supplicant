@@ -1,0 +1,61 @@
+    From 5bbe11735cdda316043469feebe5f18f17cced4f Mon Sep 17 00:00:00 2001
+From: pradeep kumar B <b.pradeep@samsung.com>
+Date: Tue, 19 Nov 2013 11:16:04 +0530
+Subject: [PATCH 6/6] AP-STA-CONNECTED event not written for wifi open/hidden
+ mode
+
+Change-Id: I63263a0e45a832811462fec6a8f944cc9b4cda3b
+Signed-off-by: pradeep kumar B <b.pradeep@samsung.com>
+---
+ src/ap/drv_callbacks.c         |   10 ++++++++++
+ wpa_supplicant/dbus/dbus_new.c |    6 ++++++
+ 3 files changed, 21 insertions(+), 2 deletions(-)
+
+diff --git a/src/ap/drv_callbacks.c b/src/ap/drv_callbacks.c
+index 8980bec..d43d0c3 100644
+--- a/src/ap/drv_callbacks.c
++++ b/src/ap/drv_callbacks.c
+@@ -302,6 +302,16 @@ skip_wpa_check:
+ 	}
+ #endif /* CONFIG_P2P */
+ 
++//#ifdef TIZEN_ARM
++	if ((sta->flags & WLAN_STA_AUTHORIZED) == 0) {
++		wpa_printf(MSG_DEBUG, "(sta->flags & WLAN_STA_AUTHORIZED) == 0");
++		wpa_printf(MSG_INFO, "AP_STA_CONNECTED" MACSTR, MAC2STR(sta->addr));
++		if (hapd->sta_authorized_cb)
++			hapd->sta_authorized_cb(hapd->sta_authorized_cb_ctx,
++					sta->addr, 1, NULL);
++     }
++//#endif
++
+ 	return 0;
+ 
+ fail:
+diff --git a/wpa_supplicant/dbus/dbus_new.c b/wpa_supplicant/dbus/dbus_new.c
+index bdc503e..80cdb59 100644
+--- a/wpa_supplicant/dbus/dbus_new.c
++++ b/wpa_supplicant/dbus/dbus_new.c
+@@ -1421,6 +1421,9 @@ void wpas_dbus_signal_p2p_peer_joined(struct wpa_supplicant *wpa_s,
+ 	if (iface == NULL)
+ 		return;
+ 
++	if (member == NULL)
++		return;
++
+ 	if (!wpa_s->dbus_groupobj_path)
+ 		return;
+ 
+@@ -3577,6 +3580,9 @@ void wpas_dbus_register_p2p_groupmember(struct wpa_supplicant *wpa_s,
+ 	if (wpa_s == NULL || wpa_s->global == NULL)
+ 		return;
+ 
++	if (p2p_if_addr == NULL)
++		return;
++
+ 	ctrl_iface = wpa_s->global->dbus;
+ 	if (ctrl_iface == NULL)
+ 		return;
+-- 
+1.7.9.5
+
