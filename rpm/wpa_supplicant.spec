@@ -48,6 +48,8 @@ rm -rf %{buildroot}
 
 # init scripts
 install -D -m 0755 %{SOURCE3} %{buildroot}/%{_lib}/systemd/system/%{name}.service
+ln -s %{name}.service %{buildroot}/%{_lib}/systemd/system/dbus-fi.epitest.hostap.WPASupplicant.service
+ln -s %{name}.service %{buildroot}/%{_lib}/systemd/system/dbus-fi.w1.wpa_supplicant1.service
 install -D -m 0644 %{SOURCE4} %{buildroot}/%{_sysconfdir}/sysconfig/%{name}
 
 # config
@@ -97,6 +99,8 @@ rm /var/log/wpa_supplicant.log || :
 %config(noreplace) %{_sysconfdir}/%{name}/%{name}.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 /%{_lib}/systemd/system/%{name}.service
+/%{_lib}/systemd/system/dbus-fi.epitest.hostap.WPASupplicant.service
+/%{_lib}/systemd/system/dbus-fi.w1.wpa_supplicant1.service
 %{_sysconfdir}/dbus-1/system.d/%{name}.conf
 %{_datadir}/dbus-1/system-services/fi.epitest.hostap.WPASupplicant.service
 %{_datadir}/dbus-1/system-services/fi.w1.wpa_supplicant1.service
