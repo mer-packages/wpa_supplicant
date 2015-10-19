@@ -1,6 +1,0 @@
-[submodule "hostap"]
-	path = hostap
-	url = git://w1.fi/srv/git/hostap.git
-[submodule "upstream"]
-	path = upstream
-	url = git://w1.fi/srv/git/hostap.git
